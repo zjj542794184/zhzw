@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="file://E:/jboss5/server/default/deploy/yzoa.war/WEB-INF/lib" />
+    </CLASSES>
+    <JAVADOC />
+    <NATIVE>
+      <root url="file://E:/jboss5/server/default/deploy/yzoa.war/WEB-INF/lib" />
+    </NATIVE>
+    <SOURCES />
+    <jarDirectory url="file://E:/jboss5/server/default/deploy/yzoa.war/WEB-INF/lib" recursive="false" />
+  </library>
+</component>
