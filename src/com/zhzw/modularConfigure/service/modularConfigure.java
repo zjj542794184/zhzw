@@ -2,9 +2,11 @@ package com.zhzw.modularConfigure.service;
 import com.siqiansoft.commons.FileIO;
 import com.siqiansoft.framework.AppData;
 import com.siqiansoft.commons.XmlSerializer;
+import com.siqiansoft.framework.model.LoginModel;
 import com.zhzw.model.ZhzwChannelItemModel;
 import com.zhzw.model.ZhzwChannelModel;
 import com.zhzw.model.ZhzwItemModel;
+import com.zhzw.systemManage.service.AdministratorManage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,6 +18,8 @@ import java.util.List;
  */
 public class modularConfigure {
     String path = AppData.getInstance().getAppConfigDir()+"/zhzwchannel.xml";
+    AdministratorManage am = new AdministratorManage();
+
     /**
      * 查询页面列表数据
      */
@@ -195,8 +199,9 @@ public class modularConfigure {
      * 暂存/配置且启动模块功能配置
      * button   0:配置并启用   1:暂存
      */
-    public HashMap<String, String> temporaryStorage(ZhzwChannelItemModel zhzwChannelItemModel){
+    public HashMap<String, String> temporaryStorage(LoginModel login,ZhzwChannelItemModel zhzwChannelItemModel){
         List<ZhzwItemModel> zhzwItemModelList = zhzwChannelItemModel.getModuleList();
+        String name = zhzwChannelItemModel.getSystemName();
         String Stu = "1";
         String Msg = "请求成功";
         try {
@@ -248,7 +253,11 @@ public class modularConfigure {
                 }
             }
             XmlSerializer.getInstance().toXMLFile(channels, path);
+            //添加日志信息
+            am.addLog(login,login.getUserName()+"编辑了"+name,"SUCCESS");
         } catch (Exception e) {
+            //添加日志信息
+            am.addLog(login,login.getUserName()+"编辑了"+name,"fail");
             Stu = "0";
             Msg = "请求失败";
             e.printStackTrace();
@@ -264,8 +273,19 @@ public class modularConfigure {
      *  system:模块code
      *  code:频道code
      */
-    public void suspendApplicat(String system,String code){
-
+    public void suspendApplicat(LoginModel login,String system,String code){
+        String name = "";
+        if(system.equals("dutymanagement")){
+            name = "值班管理";
+        }else if(system.equals("datatransmission")){
+            name = "资料传送";
+        }else if(system.equals("maillist")){
+            name = "通讯录";
+        }else if(system.equals("leavemanagement")){
+            name = "请假管理";
+        }else if(system.equals("workmanagement")){
+            name = "工作管理";
+        }
         try {
             //读取xml
             ZhzwChannelModel[] channels = (ZhzwChannelModel[]) XmlSerializer.getInstance().fromXMLFile(path);
@@ -289,7 +309,12 @@ public class modularConfigure {
                 }
             }
             XmlSerializer.getInstance().toXMLFile(channels, path);
+
+            //添加日志信息
+            am.addLog(login,login.getUserName()+"暂停了"+name,"SUCCESS");
         } catch (Exception e) {
+            //添加日志信息
+            am.addLog(login,login.getUserName()+"暂停了"+name,"fail");
             e.printStackTrace();
         }
     }

@@ -3,10 +3,12 @@ package com.zhzw.modularConfigure.service;
 import com.siqiansoft.commons.FileIO;
 import com.siqiansoft.commons.XmlSerializer;
 import com.siqiansoft.framework.AppData;
+import com.siqiansoft.framework.model.LoginModel;
 import com.siqiansoft.framework.model.db.ConditionModel;
 import com.zhzw.model.SystemConfigModel;
 import com.zhzw.model.ZhzwChannelItemModel;
 import com.zhzw.model.ZhzwChannelModel;
+import com.zhzw.systemManage.service.AdministratorManage;
 import sun.misc.BASE64Decoder;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -22,6 +24,7 @@ import java.util.List;
  */
 public class systemConfiguration {
     String path = AppData.getInstance().getAppConfigDir()+"/zhzwSystemConfig.xml";
+    AdministratorManage am = new AdministratorManage();
     /**
      * 查询系统配置首页配置与详情
      */
@@ -76,8 +79,8 @@ public class systemConfiguration {
      * 保存系统配置
      * systemName:系统名称  subjectSkin：系统主题皮肤  PageType：版面类型  code:系统配置code
      */
-    public void  preservatConfig(HttpServletRequest request,String systemName, String logo,String logoName, String subjectSkin, String PageType, String code,String ttype){
-
+    public void  preservatConfig(LoginModel login,HttpServletRequest request, String systemName, String logo, String logoName, String subjectSkin, String PageType, String code, String ttype){
+        String operation = "";
         try {
             String logoPath = "";
             if(code.equals("jichu")){
@@ -130,11 +133,13 @@ public class systemConfiguration {
                                 systemConfig.setStatus("1");
                                 systemConfig.setPageType(ttype);
                                 systemConfig.setLogo(logoPath);
+                                operation = login.getUserName()+"修改了基础信息配置";
                                 break;
                             }else if(code.equals("gaoji")){//设置高级信息配置
                                 systemConfig.setSubjectSkin(subjectSkin);
                                 systemConfig.setStatus("1");
                                 systemConfig.setPageType(PageType);
+                                operation = login.getUserName()+"修改了高级信息配置";
                                 break;
                             }
                         }
@@ -142,7 +147,12 @@ public class systemConfiguration {
                 }
             }
             XmlSerializer.getInstance().toXMLFile(systemConfigs, path);
+
+            //添加日志信息
+            am.addLog(login,operation,"SUCCESS");
         } catch (Exception e) {
+            //添加日志信息
+            am.addLog(login,operation,"fail");
             e.printStackTrace();
         }
     }
@@ -209,7 +219,7 @@ public class systemConfiguration {
      * 保存模块功能配置
      * allsystem:模块号对应的功能描述
      */
-    public void preservatModularConfig(String allsystem){
+    public void preservatModularConfig(LoginModel login,String allsystem){
         String mpath = AppData.getInstance().getAppConfigDir()+"/zhzwchannel.xml";
         String[] str = allsystem.split(";");
         try {
@@ -254,7 +264,11 @@ public class systemConfiguration {
             }
             XmlSerializer.getInstance().toXMLFile(systemConfigs, path);
             XmlSerializer.getInstance().toXMLFile(channels, mpath);
+            //添加日志信息
+           am.addLog(login,login.getUserName()+"修改了模块功能描述","SUCCESS");
         } catch (Exception e) {
+            //添加日志信息
+            am.addLog(login,login.getUserName()+"修改了模块功能描述","fail");
             e.printStackTrace();
         }
 

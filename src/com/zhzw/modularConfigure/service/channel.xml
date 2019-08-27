@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<com.zhzw.model.ChannelModel-array>
+    <com.zhzw.model.ChannelModel>
+        <code>systemManage</code>
+        <name>系统管理员管理</name>
+        <type>0</type>
+    </com.zhzw.model.ChannelModel>
+    <com.zhzw.model.ChannelModel>
+        <code>systemConfig</code>
+        <name>系统配置</name>
+        <type>0</type>
+    </com.zhzw.model.ChannelModel>
+    <com.zhzw.model.ChannelModel>
+        <code>moduleConfig</code>
+        <name>模块配置</name>
+        <type>0</type>
+    </com.zhzw.model.ChannelModel>
+    <com.zhzw.model.ChannelModel>
+        <code>journalManage</code>
+        <name>日志管理</name>
+        <type>1</type>
+    </com.zhzw.model.ChannelModel>
+</com.zhzw.model.ChannelModel-array>

@@ -2,6 +2,7 @@ package com.zhzw.modularConfigure.servlet;
 
 
 import com.alibaba.fastjson.JSON;
+import com.siqiansoft.framework.model.LoginModel;
 import com.zhzw.model.ZhzwChannelItemModel;
 import com.zhzw.modularConfigure.service.modularConfigure;
 import com.zhzw.modularConfigure.service.systemConfiguration;
@@ -58,6 +59,7 @@ public class ModularConfigureServlet extends HttpServlet {
         String allsystem = request.getParameter("allsystem");
         //获取基础模块配置类别
         String type = request.getParameter("type");
+        LoginModel login = (LoginModel)request.getSession(false).getAttribute("LOGINMODEL");
             try {
                 JSONObject json = new JSONObject();
                 if(ac.equals("selectList")){//列表所有数据查询
@@ -82,7 +84,7 @@ public class ModularConfigureServlet extends HttpServlet {
                     response.getWriter().println(json);
                 }else if(ac.equals("temporaryStorage")){// 暂存/配置且启动模块功能配置
                     ZhzwChannelItemModel zhzwChannelItemModel = JSON.parseObject(request.getParameter("Para"), ZhzwChannelItemModel.class);
-                    HashMap<String,String> map = mc.temporaryStorage(zhzwChannelItemModel);
+                    HashMap<String,String> map = mc.temporaryStorage(login,zhzwChannelItemModel);
                     json.put("request",map);
                     response.getWriter().println(json);
                 }else if(ac.equals("systemConfigList")){// 查询系统配置首页配置状态
@@ -90,12 +92,11 @@ public class ModularConfigureServlet extends HttpServlet {
                     json.put("systemConfigList",list);
                     response.getWriter().println(json);
                 }else if(ac.equals("stopapp")){// 暂停应用
-                    mc.suspendApplicat(systemCode,code);
+                    mc.suspendApplicat(login,systemCode,code);
                 }else if(ac.equals("preservatConfig")){// 保存系统配置
-                    sc.preservatConfig(request,systemConfigName,logo,logoName,subjectSkin,pageType,configCode,type);
+                    sc.preservatConfig(login,request,systemConfigName,logo,logoName,subjectSkin,pageType,configCode,type);
                 }else if(ac.equals("preservatModularConfig")){// 保存模块功能配置
-                    System.out.println("进入保存模块功能配置");
-                    sc.preservatModularConfig(allsystem);
+                    sc.preservatModularConfig(login,allsystem);
                     response.getWriter().println(json);
                 }
             } catch (Exception e) {
